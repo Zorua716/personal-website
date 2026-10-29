@@ -11,6 +11,7 @@
 - [PRD.md](PRD.md)：产品目标、信息架构、功能需求与验收标准
 - [TECH_DESIGN.md](TECH_DESIGN.md)：技术栈、页面结构、视觉系统、交互与部署方案
 - [AGENTS.md](AGENTS.md)：AI 编码助手的项目约定与开发规范
+- [DEPLOY.md](DEPLOY.md)：FastAPI 后端的 Docker、Caddy、Nginx 与 systemd 生产部署方案
 
 ## 部署到 GitHub Pages
 

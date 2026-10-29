@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 SITE_DIR = BASE_DIR.parent
 ASSETS_DIR = SITE_DIR / "assets"
-UPLOAD_DIR = BASE_DIR / "uploads"
+UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", str(BASE_DIR / "uploads")))
 STATIC_DIR = BASE_DIR / "static"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -34,6 +34,7 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin12345")
 SESSION_COOKIE = "session"
 TOKEN_TTL_MINUTES = 60 * 24 * 7
 CORS_ORIGINS = [o.strip() for o in os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()]
+COOKIE_SECURE = os.getenv("COOKIE_SECURE", "false").lower() in {"1", "true", "yes"}
 
 engine = create_engine(
     DB_URL,
@@ -336,7 +337,14 @@ def login(body: LoginIn, response: Response, db: Session = Depends(get_db)):
     if not user or not verify_password(body.password, user.password_hash):
         raise HTTPException(status_code=401, detail="用户名或密码错误")
     token = create_token(user.username)
-    response.set_cookie(SESSION_COOKIE, token, httponly=True, samesite="lax", max_age=TOKEN_TTL_MINUTES * 60)
+    response.set_cookie(
+        SESSION_COOKIE,
+        token,
+        httponly=True,
+        secure=COOKIE_SECURE,
+        samesite="lax",
+        max_age=TOKEN_TTL_MINUTES * 60,
+    )
     return {"ok": True, "username": user.username}
 
 

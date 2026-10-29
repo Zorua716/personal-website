@@ -1,0 +1,14 @@
+.git
+.github
+.idea
+.vscode
+node_modules
+dist
+_site
+backend/.env
+backend/.env.production
+backend/.venv
+backend/app.db
+backend/uploads
+__pycache__
+*.pyc

@@ -6,6 +6,8 @@ Thumbs.db
 backend/app.db
 backend/uploads/
 backend/.env
+backend/.env.production
 backend/.venv/
+deploy/.env
 __pycache__/
 *.pyc

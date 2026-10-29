@@ -1,0 +1,15 @@
+[Unit]
+Description=Personal Website Backend
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/personal-website/backend
+EnvironmentFile=/opt/personal-website/backend/.env
+ExecStart=/opt/personal-website/backend/.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --proxy-headers --forwarded-allow-ips=*
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
