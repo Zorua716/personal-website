@@ -676,6 +676,19 @@ button {
   border-top: 2px solid var(--ink);
 }
 
+.project-note {
+  margin: -26px 0 32px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.project-link {
+  color: inherit;
+  text-decoration: none;
+}
+
 .project {
   display: grid;
   grid-template-columns: 100px 1fr 70px;
