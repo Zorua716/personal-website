@@ -1,10 +1,16 @@
 # 陈世堂的个人网站
 
-一个纯静态的个人展示网站，包含个人介绍、技能、项目与联系方式。深色星空主题，支持手机、平板和桌面端。
+一个纯静态的个人展示网站，包含个人介绍、技能、项目与联系方式。采用浅色纸张网格、粗黑边框、硬阴影与超大排版的编辑设计风格（neo-brutalist editorial），支持手机、平板和桌面端。
 
 ## 本地预览
 
 直接用浏览器打开 `index.html` 即可，无需安装依赖。
+
+## 项目文档
+
+- [PRD.md](PRD.md)：产品目标、信息架构、功能需求与验收标准
+- [TECH_DESIGN.md](TECH_DESIGN.md)：技术栈、页面结构、视觉系统、交互与部署方案
+- [AGENTS.md](AGENTS.md)：AI 编码助手的项目约定与开发规范
 
 ## 部署到 GitHub Pages
 
@@ -34,3 +40,4 @@ https://zorua716.github.io/personal-website/
 
 - 图片资源全部保存在本地 `assets/`，不依赖外部 CDN。
 - 头像为 GitHub 默认头像的本地副本。
+- `PRD.md`、`TECH_DESIGN.md`、`AGENTS.md` 仅作为项目文档，不会被发布到公开网站。
