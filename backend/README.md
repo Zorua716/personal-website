@@ -14,14 +14,19 @@
 
 ## 安装与运行
 
+建议使用项目内独立虚拟环境。下面以 Python 3.14 的默认安装路径为例：
+
 ```powershell
-cd D:\Eveees\Course\Software\personal-website\backend
-python -m venv .venv
+cd /d D:\Eveees\Course\Software\personal-website\backend
+C:\Users\35402\AppData\Local\Programs\Python\Python314\python.exe -m venv .venv
 .venv\Scripts\activate
-pip install -r requirements.txt
-copy .env.example .env
-uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+copy /Y .env.example .env
+python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
+
+`python` 不在 PATH 时，可以直接使用上面的完整 Python 路径执行 `-m pip` 和 `-m uvicorn`。
 
 首次启动会自动建表，并根据 `.env` 创建管理员账号。
 
