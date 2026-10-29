@@ -19,6 +19,8 @@ from sqlalchemy import String, Text, Integer, DateTime, Boolean, create_engine, 
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+SITE_DIR = BASE_DIR.parent
+ASSETS_DIR = SITE_DIR / "assets"
 UPLOAD_DIR = BASE_DIR / "uploads"
 STATIC_DIR = BASE_DIR / "static"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -488,3 +490,33 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 @app.get("/admin", include_in_schema=False)
 def admin_page():
     return FileResponse(STATIC_DIR / "admin.html")
+
+
+@app.get("/", include_in_schema=False)
+def site_index():
+    return FileResponse(SITE_DIR / "index.html")
+
+
+@app.get("/index.html", include_in_schema=False)
+def site_index_alias():
+    return FileResponse(SITE_DIR / "index.html")
+
+
+@app.get("/styles.css", include_in_schema=False)
+def site_styles():
+    return FileResponse(SITE_DIR / "styles.css")
+
+
+@app.get("/script.js", include_in_schema=False)
+def site_script():
+    return FileResponse(SITE_DIR / "script.js")
+
+
+@app.get("/assets/{filename}", include_in_schema=False)
+def site_asset(filename: str):
+    target = (ASSETS_DIR / filename).resolve()
+    if not str(target).startswith(str(ASSETS_DIR.resolve())):
+        raise HTTPException(status_code=404, detail="资源不存在")
+    if not target.is_file():
+        raise HTTPException(status_code=404, detail="资源不存在")
+    return FileResponse(target)

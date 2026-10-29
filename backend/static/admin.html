@@ -5,109 +5,210 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>个人网站管理后台</title>
     <style>
-      :root { --ink: #111; --paper: #f2efe6; --blue: #2c55ff; --lime: #d8ff3e; --line: #d8d2c4; }
+      :root {
+        --bg: #f4f6fb;
+        --card: #ffffff;
+        --ink: #161a24;
+        --muted: #7a8296;
+        --line: #e7eaf1;
+        --blue: #2c55ff;
+        --blue-soft: #eef2ff;
+        --green: #1f9d55;
+        --red: #d64545;
+        --radius: 14px;
+        --shadow: 0 8px 24px rgba(22, 26, 36, 0.06);
+        --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
       * { box-sizing: border-box; }
-      body { margin: 0; font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--paper); color: var(--ink); }
-      .wrap { max-width: 980px; margin: 0 auto; padding: 24px; }
-      h1 { font-size: 22px; margin: 0 0 16px; }
-      .panel { background: #fff; border: 2px solid var(--ink); padding: 18px; box-shadow: 6px 6px 0 var(--ink); }
-      input, textarea, button, select { font: inherit; }
-      input, textarea { width: 100%; padding: 9px 10px; border: 2px solid var(--ink); background: #fff; margin: 4px 0 10px; }
-      textarea { min-height: 110px; resize: vertical; }
-      button { padding: 9px 14px; border: 2px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; }
-      button.secondary { background: #fff; color: var(--ink); }
-      button:hover { background: var(--blue); }
-      .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-      .tabs button { background: #fff; color: var(--ink); }
-      .tabs button.active { background: var(--lime); }
-      .row { display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--line); }
-      .row strong { display: block; }
-      .row .muted { color: #666; font-size: 13px; }
-      .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-      .msg { margin: 10px 0; padding: 10px; border: 1px solid var(--line); background: #fff; }
-      .hidden { display: none; }
-      .login { max-width: 360px; margin: 80px auto; }
-      @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+      body { margin: 0; font-family: var(--font); color: var(--ink); background: var(--bg); }
+      button { font-family: inherit; }
+      a { color: inherit; }
+
+      /* Login */
+      .login-wrap { min-height: 100vh; display: grid; place-items: center; padding: 20px; }
+      .login-card { width: 100%; max-width: 380px; background: var(--card); border-radius: 18px; box-shadow: var(--shadow); padding: 34px 30px; }
+      .brand { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--blue); color: #fff; font-weight: 800; font-size: 18px; }
+      .login-card h1 { margin: 18px 0 4px; font-size: 20px; }
+      .login-card .sub { margin: 0 0 24px; color: var(--muted); font-size: 13px; }
+      label { display: block; margin-bottom: 14px; font-size: 13px; color: var(--muted); }
+      input, textarea, select { width: 100%; margin-top: 6px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fbfcfe; color: var(--ink); font: inherit; font-size: 14px; }
+      input:focus, textarea:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
+      textarea { min-height: 120px; resize: vertical; }
+      .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; border: none; border-radius: 10px; background: var(--blue); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; }
+      .btn:hover { opacity: 0.92; }
+      .btn.ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+      .btn.danger { background: #fff; color: var(--red); border: 1px solid #f2d3d3; }
+      .btn.small { padding: 6px 10px; font-size: 12.5px; border-radius: 8px; }
+      .btn.block { width: 100%; }
+      .err { color: var(--red); font-size: 13px; min-height: 18px; margin: 12px 0 0; }
+
+      /* App layout */
+      .app { display: grid; grid-template-columns: 224px 1fr; min-height: 100vh; }
+      .sidebar { background: var(--card); border-right: 1px solid var(--line); padding: 22px 14px; display: flex; flex-direction: column; gap: 8px; }
+      .sidebar .brand { display: flex; align-items: center; gap: 10px; margin: 0 6px 18px; }
+      .sidebar .brand span { color: var(--ink); font-size: 14px; font-weight: 700; }
+      .sidebar nav { display: flex; flex-direction: column; gap: 4px; }
+      .sidebar nav button { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border: none; border-radius: 10px; background: transparent; color: var(--muted); font-size: 14px; cursor: pointer; text-align: left; }
+      .sidebar nav button:hover { background: #f5f6fa; color: var(--ink); }
+      .sidebar nav button.active { background: var(--blue-soft); color: var(--blue); font-weight: 600; }
+      .logout { margin-top: auto; padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--muted); cursor: pointer; }
+
+      .content { padding: 28px 32px; min-width: 0; }
+      .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+      .topbar h1 { margin: 0; font-size: 22px; }
+      .topbar .user { color: var(--muted); font-size: 13px; }
+
+      .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+      .stat { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
+      .stat .num { font-size: 28px; font-weight: 800; }
+      .stat .label { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+      .toolbar { display: flex; justify-content: flex-end; margin-bottom: 14px; }
+      .list { display: flex; flex-direction: column; gap: 12px; }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); }
+      .card .row { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+      .card .title { font-weight: 600; }
+      .card .meta { color: var(--muted); font-size: 12.5px; margin-top: 3px; }
+      .card .actions { display: flex; gap: 8px; flex: none; }
+      .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; background: var(--blue-soft); color: var(--blue); font-size: 11px; margin-right: 5px; }
+      .empty { color: var(--muted); text-align: center; padding: 40px; }
+
+      .upload-card { max-width: 520px; }
+      .upload-card .drop { padding: 26px; border: 1.5px dashed #c8cde0; border-radius: 12px; text-align: center; color: var(--muted); }
+      .upload-card img { max-width: 180px; max-height: 180px; border-radius: 10px; margin-top: 14px; }
+      .upload-result { margin-top: 14px; font-size: 13px; }
+
+      /* Modal */
+      .modal { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(22, 26, 36, 0.4); padding: 18px; }
+      .modal-card { width: 100%; max-width: 560px; max-height: 90vh; overflow: auto; background: #fff; border-radius: 16px; padding: 24px; }
+      .modal-card h2 { margin: 0 0 16px; font-size: 18px; }
+      .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+
+      .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 13px; box-shadow: var(--shadow); z-index: 60; }
+
+      @media (max-width: 720px) {
+        .app { grid-template-columns: 1fr; }
+        .sidebar { flex-direction: row; align-items: center; overflow-x: auto; }
+        .sidebar .brand { margin: 0; }
+        .sidebar nav { flex-direction: row; }
+        .logout { margin: 0 0 0 auto; }
+        .content { padding: 18px 14px; }
+        .stats { grid-template-columns: 1fr 1fr; }
+        .modal-grid { grid-template-columns: 1fr; }
+      }
     </style>
   </head>
   <body>
-    <div class="wrap">
-      <div id="login-view" class="panel login">
-        <h1>管理后台登录</h1>
-        <input id="login-user" placeholder="用户名" />
-        <input id="login-pass" type="password" placeholder="密码" />
-        <button id="login-btn">登录</button>
-        <p id="login-msg" style="color:#c0392b"></p>
-      </div>
-
-      <div id="app-view" class="hidden">
-        <div class="row">
-          <h1>个人网站管理后台</h1>
-          <button id="logout-btn" class="secondary">退出登录</button>
-        </div>
-
-        <div class="tabs">
-          <button data-tab="projects" class="active">项目</button>
-          <button data-tab="posts">文章</button>
-          <button data-tab="messages">留言</button>
-          <button data-tab="stats">统计</button>
-          <button data-tab="upload">上传</button>
-        </div>
-
-        <section id="tab-projects" class="tab">
-          <div class="panel">
-            <h2 id="project-form-title">新建项目</h2>
-            <div class="grid2">
-              <div><input id="p-slug" placeholder="slug（英文标识）" /><input id="p-title" placeholder="标题" /><input id="p-url" placeholder="跳转链接" /></div>
-              <div><input id="p-category" placeholder="类型，如 前端 · 浏览器插件" /><input id="p-type" placeholder="编号旁标签，如 EXTENSION" /><input id="p-sort" type="number" placeholder="排序" value="0" /></div>
-            </div>
-            <textarea id="p-desc" placeholder="描述"></textarea>
-            <input id="p-tags" placeholder="技术标签，英文逗号分隔" />
-            <label><input id="p-published" type="checkbox" checked /> 发布</label>
-            <button id="project-save">保存</button>
-            <button id="project-reset" class="secondary">重置</button>
-          </div>
-          <div id="project-list"></div>
-        </section>
-
-        <section id="tab-posts" class="tab hidden">
-          <div class="panel">
-            <h2 id="post-form-title">新建文章</h2>
-            <input id="post-slug" placeholder="slug（英文标识）" />
-            <input id="post-title" placeholder="标题" />
-            <input id="post-summary" placeholder="摘要" />
-            <textarea id="post-content" placeholder="Markdown 内容"></textarea>
-            <label><input id="post-published" type="checkbox" checked /> 发布</label>
-            <button id="post-save">保存</button>
-            <button id="post-reset" class="secondary">重置</button>
-          </div>
-          <div id="post-list"></div>
-        </section>
-
-        <section id="tab-messages" class="tab hidden">
-          <div id="message-list"></div>
-        </section>
-
-        <section id="tab-stats" class="tab hidden">
-          <div class="panel" id="stats-box">加载中…</div>
-        </section>
-
-        <section id="tab-upload" class="tab hidden">
-          <div class="panel">
-            <input type="file" id="upload-file" accept="image/*" />
-            <button id="upload-btn">上传图片</button>
-            <p id="upload-result"></p>
-          </div>
-        </section>
+    <div class="login-wrap" id="login-view">
+      <div class="login-card">
+        <span class="brand">CS</span>
+        <h1>个人网站管理后台</h1>
+        <p class="sub">登录后管理项目、文章、留言与上传图片</p>
+        <form id="login-form">
+          <label>用户名<input id="login-user" autocomplete="username" /></label>
+          <label>密码<input id="login-pass" type="password" autocomplete="current-password" /></label>
+          <button class="btn block" type="submit">登录</button>
+          <p class="err" id="login-err"></p>
+        </form>
       </div>
     </div>
 
+    <div class="app" id="app-view" hidden>
+      <aside class="sidebar">
+        <div class="brand"><span class="brand">CS</span><span>管理后台</span></div>
+        <nav>
+          <button data-view="overview" class="active">📊 概览</button>
+          <button data-view="projects">📦 项目</button>
+          <button data-view="posts">📝 文章</button>
+          <button data-view="messages">✉️ 留言</button>
+          <button data-view="upload">🖼️ 上传</button>
+        </nav>
+        <button class="logout" id="logout">退出登录</button>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <h1 id="view-title">概览</h1>
+          <span class="user" id="user-label"></span>
+        </header>
+
+        <section id="view-overview" class="view">
+          <div class="stats" id="stats"></div>
+        </section>
+
+        <section id="view-projects" class="view" hidden>
+          <div class="toolbar"><button class="btn" id="new-project">＋ 新建项目</button></div>
+          <div class="list" id="project-list"></div>
+        </section>
+
+        <section id="view-posts" class="view" hidden>
+          <div class="toolbar"><button class="btn" id="new-post">＋ 新建文章</button></div>
+          <div class="list" id="post-list"></div>
+        </section>
+
+        <section id="view-messages" class="view" hidden>
+          <div class="list" id="message-list"></div>
+        </section>
+
+        <section id="view-upload" class="view" hidden>
+          <div class="card upload-card">
+            <div class="drop">选择或拖入一张图片（png / jpg / webp / gif / svg，≤ 5MB）</div>
+            <input type="file" id="upload-file" accept="image/*" style="margin-top:12px" />
+            <button class="btn" id="upload-btn" style="margin-top:12px">上传图片</button>
+            <div class="upload-result" id="upload-result"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal" id="project-modal" hidden>
+      <div class="modal-card">
+        <h2 id="project-modal-title">新建项目</h2>
+        <div class="modal-grid">
+          <label>slug<input id="p-slug" placeholder="英文标识，如 ecom" /></label>
+          <label>标题<input id="p-title" placeholder="项目名称" /></label>
+          <label>分类<input id="p-category" placeholder="前端 · 浏览器插件" /></label>
+          <label>类型标签<input id="p-type" placeholder="EXTENSION" /></label>
+          <label>跳转链接<input id="p-url" placeholder="https://..." /></label>
+          <label>排序<input id="p-sort" type="number" value="0" /></label>
+        </div>
+        <label style="margin-top:12px">描述<textarea id="p-desc" placeholder="一句话说明项目"></textarea></label>
+        <label>技术标签<input id="p-tags" placeholder="英文逗号分隔，如 TypeScript,Vue 3" /></label>
+        <label style="margin-top:8px"><input type="checkbox" id="p-published" checked style="width:auto" /> 发布</label>
+        <div class="modal-actions">
+          <button class="btn ghost" data-close="project-modal">取消</button>
+          <button class="btn" id="project-save">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="post-modal" hidden>
+      <div class="modal-card">
+        <h2 id="post-modal-title">新建文章</h2>
+        <label>slug<input id="post-slug" placeholder="英文标识" /></label>
+        <label>标题<input id="post-title" placeholder="文章标题" /></label>
+        <label>摘要<input id="post-summary" placeholder="一句话摘要" /></label>
+        <label>Markdown 内容<textarea id="post-content" placeholder="# 标题&#10;&#10;正文…"></textarea></label>
+        <label style="margin-top:8px"><input type="checkbox" id="post-published" checked style="width:auto" /> 发布</label>
+        <div class="modal-actions">
+          <button class="btn ghost" data-close="post-modal">取消</button>
+          <button class="btn" id="post-save">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+
     <script>
       var $ = function (id) { return document.getElementById(id); };
+      var VIEW_TITLES = { overview: "概览", projects: "项目", posts: "文章", messages: "留言", upload: "上传" };
 
       async function api(path, options) {
         options = options || {};
-        options.headers = Object.assign({ "Content-Type": "application/json" }, options.headers || {});
+        if (options.body && !(options.body instanceof FormData)) {
+          options.headers = Object.assign({ "Content-Type": "application/json" }, options.headers || {});
+        }
         var res = await fetch(path, options);
         var data = null;
         try { data = await res.json(); } catch (e) { data = null; }
@@ -115,154 +216,186 @@
         return data;
       }
 
-      function jsonBody(method, data) {
-        return { method: method, body: JSON.stringify(data) };
+      function toast(msg) {
+        var t = $("toast");
+        t.textContent = msg;
+        t.hidden = false;
+        window.clearTimeout(t._timer);
+        t._timer = window.setTimeout(function () { t.hidden = true; }, 2200);
       }
+
+      function esc(s) {
+        return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+      }
+
+      function switchView(name) {
+        document.querySelectorAll(".sidebar nav button").forEach(function (b) { b.classList.toggle("active", b.dataset.view === name); });
+        document.querySelectorAll(".view").forEach(function (v) { v.hidden = v.id !== "view-" + name; });
+        $("view-title").textContent = VIEW_TITLES[name] || name;
+        if (name === "overview") loadOverview();
+        if (name === "projects") loadProjects();
+        if (name === "posts") loadPosts();
+        if (name === "messages") loadMessages();
+      }
+
+      document.querySelectorAll(".sidebar nav button").forEach(function (b) {
+        b.addEventListener("click", function () { switchView(b.dataset.view); });
+      });
 
       // 登录态
       async function checkAuth() {
         try {
-          await api("/api/admin/me", { method: "GET" });
-          showApp();
+          var me = await api("/api/admin/me");
+          $("login-view").hidden = true;
+          $("app-view").hidden = false;
+          $("user-label").textContent = "已登录：" + me.username;
+          switchView("overview");
         } catch (e) {
-          showLogin();
+          $("login-view").hidden = false;
+          $("app-view").hidden = true;
         }
       }
 
-      function showLogin() {
-        $("login-view").classList.remove("hidden");
-        $("app-view").classList.add("hidden");
-      }
-
-      function showApp() {
-        $("login-view").classList.add("hidden");
-        $("app-view").classList.remove("hidden");
-        loadProjects();
-        loadPosts();
-        loadMessages();
-        loadStats();
-      }
-
-      $("login-btn").addEventListener("click", async function () {
+      $("login-form").addEventListener("submit", async function (e) {
+        e.preventDefault();
         try {
-          await api("/api/admin/login", jsonBody("POST", {
-            username: $("login-user").value,
-            password: $("login-pass").value
-          }));
-          showApp();
-        } catch (e) {
-          $("login-msg").textContent = e.message;
+          await api("/api/admin/login", {
+            method: "POST",
+            body: JSON.stringify({ username: $("login-user").value, password: $("login-pass").value })
+          });
+          checkAuth();
+        } catch (err) {
+          $("login-err").textContent = err.message;
         }
       });
 
-      $("logout-btn").addEventListener("click", async function () {
+      $("logout").addEventListener("click", async function () {
         await api("/api/admin/logout", { method: "POST" });
-        showLogin();
+        location.reload();
       });
 
-      // 标签切换
-      document.querySelectorAll(".tabs button").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          document.querySelectorAll(".tabs button").forEach(function (b) { b.classList.remove("active"); });
-          btn.classList.add("active");
-          document.querySelectorAll(".tab").forEach(function (t) { t.classList.add("hidden"); });
-          $("tab-" + btn.dataset.tab).classList.remove("hidden");
-        });
-      });
+      // 概览
+      async function loadOverview() {
+        var s = await api("/api/admin/stats");
+        var totalClicks = Object.keys(s.clicks).reduce(function (sum, k) { return sum + s.clicks[k]; }, 0);
+        $("stats").innerHTML =
+          statCard(s.project_count, "项目数") + statCard(s.post_count, "文章数") +
+          statCard(s.message_count, "留言数") + statCard(totalClicks, "点击总数");
+      }
+      function statCard(num, label) {
+        return '<div class="stat"><div class="num">' + num + '</div><div class="label">' + label + "</div></div>";
+      }
 
       // 项目
       var editingProject = null;
-
       async function loadProjects() {
         var projects = await api("/api/admin/projects");
         var box = $("project-list");
-        box.innerHTML = "";
+        box.innerHTML = projects.length ? "" : '<div class="empty">还没有项目，点击右上角新建。</div>';
         projects.forEach(function (p) {
+          var tags = (p.tags || []).map(function (t) { return '<span class="pill">' + esc(t) + "</span>"; }).join("");
           var div = document.createElement("div");
-          div.className = "row";
+          div.className = "card";
           div.innerHTML =
-            "<div><strong>" + esc(p.title) + "</strong><span class='muted'> /" + esc(p.slug) + " · " + esc(p.url) + "</span></div>" +
-            "<div><button data-edit='" + p.id + "'>编辑</button> <button data-del='" + p.id + "'>删除</button></div>";
+            '<div class="row"><div><div class="title">' + esc(p.title) + (p.published ? "" : ' <span class="pill">草稿</span>') + "</div>" +
+            '<div class="meta">/' + esc(p.slug) + " · " + esc(p.url) + "</div><div style='margin-top:6px'>" + tags + "</div></div>" +
+            '<div class="actions"><button class="btn ghost small" data-edit="' + p.id + '">编辑</button>' +
+            '<button class="btn danger small" data-del="' + p.id + '">删除</button></div></div>';
           box.appendChild(div);
         });
-        box.querySelectorAll("[data-edit]").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            var p = projects.find(function (x) { return x.id == btn.dataset.edit; });
-            if (!p) return;
+        box.querySelectorAll("[data-edit]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var p = projects.find(function (x) { return x.id == b.dataset.edit; });
             editingProject = p.id;
-            $("project-form-title").textContent = "编辑项目：" + p.title;
-            $("p-slug").value = p.slug; $("p-title").value = p.title; $("p-url").value = p.url;
-            $("p-category").value = p.category; $("p-type").value = p.type_label; $("p-sort").value = p.sort_order;
+            $("project-modal-title").textContent = "编辑项目";
+            $("p-slug").value = p.slug; $("p-title").value = p.title; $("p-category").value = p.category;
+            $("p-type").value = p.type_label; $("p-url").value = p.url; $("p-sort").value = p.sort_order;
             $("p-desc").value = p.description; $("p-tags").value = (p.tags || []).join(",");
             $("p-published").checked = p.published;
+            $("project-modal").hidden = false;
           });
         });
-        box.querySelectorAll("[data-del]").forEach(function (btn) {
-          btn.addEventListener("click", async function () {
-            if (!confirm("确认删除？")) return;
-            await api("/api/admin/projects/" + btn.dataset.del, { method: "DELETE" });
+        box.querySelectorAll("[data-del]").forEach(function (b) {
+          b.addEventListener("click", async function () {
+            if (!confirm("确认删除该项目？")) return;
+            await api("/api/admin/projects/" + b.dataset.del, { method: "DELETE" });
+            toast("已删除");
             loadProjects();
           });
         });
       }
 
+      $("new-project").addEventListener("click", function () {
+        editingProject = null;
+        $("project-modal-title").textContent = "新建项目";
+        ["p-slug", "p-title", "p-category", "p-type", "p-url", "p-desc", "p-tags"].forEach(function (id) { $(id).value = ""; });
+        $("p-sort").value = "0";
+        $("p-published").checked = true;
+        $("project-modal").hidden = false;
+      });
+
       $("project-save").addEventListener("click", async function () {
         var data = {
-          slug: $("p-slug").value.trim(), title: $("p-title").value.trim(), url: $("p-url").value.trim(),
-          category: $("p-category").value.trim(), type_label: $("p-type").value.trim(),
+          slug: $("p-slug").value.trim(), title: $("p-title").value.trim(), category: $("p-category").value.trim(),
+          type_label: $("p-type").value.trim(), url: $("p-url").value.trim(),
           sort_order: parseInt($("p-sort").value || "0", 10), description: $("p-desc").value,
           tags: $("p-tags").value.trim(), published: $("p-published").checked
         };
         try {
-          if (editingProject == null) await api("/api/admin/projects", jsonBody("POST", data));
-          else await api("/api/admin/projects/" + editingProject, jsonBody("PUT", data));
-          resetProjectForm();
+          if (editingProject == null) await api("/api/admin/projects", { method: "POST", body: JSON.stringify(data) });
+          else await api("/api/admin/projects/" + editingProject, { method: "PUT", body: JSON.stringify(data) });
+          $("project-modal").hidden = true;
+          toast("项目已保存");
           loadProjects();
-        } catch (e) { alert(e.message); }
+        } catch (e) { toast(e.message); }
       });
-
-      $("project-reset").addEventListener("click", resetProjectForm);
-      function resetProjectForm() {
-        editingProject = null;
-        $("project-form-title").textContent = "新建项目";
-        ["p-slug", "p-title", "p-url", "p-category", "p-type", "p-desc", "p-tags"].forEach(function (id) { $(id).value = ""; });
-        $("p-sort").value = "0";
-        $("p-published").checked = true;
-      }
 
       // 文章
       var editingPost = null;
-
       async function loadPosts() {
         var posts = await api("/api/admin/posts");
         var box = $("post-list");
-        box.innerHTML = "";
+        box.innerHTML = posts.length ? "" : '<div class="empty">还没有文章，点击右上角新建。</div>';
         posts.forEach(function (p) {
           var div = document.createElement("div");
-          div.className = "row";
+          div.className = "card";
           div.innerHTML =
-            "<div><strong>" + esc(p.title) + "</strong><span class='muted'> /" + esc(p.slug) + " · " + (p.published ? "已发布" : "草稿") + "</span></div>" +
-            "<div><button data-edit='" + p.id + "'>编辑</button> <button data-del='" + p.id + "'>删除</button></div>";
+            '<div class="row"><div><div class="title">' + esc(p.title) + (p.published ? "" : ' <span class="pill">草稿</span>') + "</div>" +
+            '<div class="meta">/' + esc(p.slug) + " · " + esc(p.summary || "") + "</div></div>" +
+            '<div class="actions"><button class="btn ghost small" data-edit="' + p.id + '">编辑</button>' +
+            '<button class="btn danger small" data-del="' + p.id + '">删除</button></div></div>';
           box.appendChild(div);
         });
-        box.querySelectorAll("[data-edit]").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            var p = posts.find(function (x) { return x.id == btn.dataset.edit; });
+        box.querySelectorAll("[data-edit]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var p = posts.find(function (x) { return x.id == b.dataset.edit; });
             editingPost = p.id;
-            $("post-form-title").textContent = "编辑文章：" + p.title;
+            $("post-modal-title").textContent = "编辑文章";
             $("post-slug").value = p.slug; $("post-title").value = p.title;
             $("post-summary").value = p.summary; $("post-content").value = p.content_md;
             $("post-published").checked = p.published;
+            $("post-modal").hidden = false;
           });
         });
-        box.querySelectorAll("[data-del]").forEach(function (btn) {
-          btn.addEventListener("click", async function () {
-            if (!confirm("确认删除？")) return;
-            await api("/api/admin/posts/" + btn.dataset.del, { method: "DELETE" });
+        box.querySelectorAll("[data-del]").forEach(function (b) {
+          b.addEventListener("click", async function () {
+            if (!confirm("确认删除该文章？")) return;
+            await api("/api/admin/posts/" + b.dataset.del, { method: "DELETE" });
+            toast("已删除");
             loadPosts();
           });
         });
       }
+
+      $("new-post").addEventListener("click", function () {
+        editingPost = null;
+        $("post-modal-title").textContent = "新建文章";
+        ["post-slug", "post-title", "post-summary", "post-content"].forEach(function (id) { $(id).value = ""; });
+        $("post-published").checked = true;
+        $("post-modal").hidden = false;
+      });
 
       $("post-save").addEventListener("click", async function () {
         var data = {
@@ -271,66 +404,58 @@
           published: $("post-published").checked
         };
         try {
-          if (editingPost == null) await api("/api/admin/posts", jsonBody("POST", data));
-          else await api("/api/admin/posts/" + editingPost, jsonBody("PUT", data));
-          resetPostForm();
+          if (editingPost == null) await api("/api/admin/posts", { method: "POST", body: JSON.stringify(data) });
+          else await api("/api/admin/posts/" + editingPost, { method: "PUT", body: JSON.stringify(data) });
+          $("post-modal").hidden = true;
+          toast("文章已保存");
           loadPosts();
-        } catch (e) { alert(e.message); }
+        } catch (e) { toast(e.message); }
       });
-
-      $("post-reset").addEventListener("click", resetPostForm);
-      function resetPostForm() {
-        editingPost = null;
-        $("post-form-title").textContent = "新建文章";
-        ["post-slug", "post-title", "post-summary", "post-content"].forEach(function (id) { $(id).value = ""; });
-        $("post-published").checked = true;
-      }
 
       // 留言
       async function loadMessages() {
         var messages = await api("/api/admin/messages");
         var box = $("message-list");
-        box.innerHTML = "";
-        if (!messages.length) box.innerHTML = '<div class="panel">暂无留言</div>';
+        box.innerHTML = messages.length ? "" : '<div class="empty">暂无留言</div>';
         messages.forEach(function (m) {
           var div = document.createElement("div");
-          div.className = "msg";
-          div.innerHTML = "<strong>" + esc(m.name) + " · " + esc(m.email) + "</strong><p>" + esc(m.message) + "</p><button data-del='" + m.id + "'>删除</button>";
+          div.className = "card";
+          div.innerHTML =
+            '<div class="row"><div><div class="title">' + esc(m.name) + " · " + esc(m.email) + "</div>" +
+            '<div class="meta" style="white-space:pre-wrap">' + esc(m.message) + "</div></div>" +
+            '<div class="actions"><button class="btn danger small" data-del="' + m.id + '">删除</button></div></div>';
           box.appendChild(div);
         });
-        box.querySelectorAll("[data-del]").forEach(function (btn) {
-          btn.addEventListener("click", async function () {
-            await api("/api/admin/messages/" + btn.dataset.del, { method: "DELETE" });
+        box.querySelectorAll("[data-del]").forEach(function (b) {
+          b.addEventListener("click", async function () {
+            await api("/api/admin/messages/" + b.dataset.del, { method: "DELETE" });
+            toast("已删除");
             loadMessages();
           });
         });
       }
 
-      // 统计
-      async function loadStats() {
-        var s = await api("/api/admin/stats");
-        var clicks = Object.keys(s.clicks).map(function (k) { return "<div>" + esc(k) + "：" + s.clicks[k] + " 次</div>"; }).join("") || "<div>暂无点击</div>";
-        $("stats-box").innerHTML =
-          "<p>项目数：" + s.project_count + "，文章数：" + s.post_count + "，留言数：" + s.message_count + "</p>" + clicks;
-      }
-
       // 上传
       $("upload-btn").addEventListener("click", async function () {
         var file = $("upload-file").files[0];
-        if (!file) { alert("请先选择图片"); return; }
+        if (!file) { toast("请先选择图片"); return; }
         var form = new FormData();
         form.append("file", file);
-        var res = await fetch("/api/admin/upload", { method: "POST", body: form });
-        var data = await res.json();
-        if (!res.ok) { $("upload-result").textContent = data.detail || "上传失败"; return; }
-        $("upload-result").innerHTML = "上传成功：<code>" + data.url + "</code>";
+        try {
+          var data = await api("/api/admin/upload", { method: "POST", body: form });
+          $("upload-result").innerHTML =
+            '<img src="' + data.url + '" alt="预览" /><br><code>' + data.url + "</code>";
+          toast("上传成功");
+        } catch (e) { toast(e.message); }
       });
 
-      function esc(s) {
-        return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
-          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-        });
-      }
+      // 关闭弹窗
+      document.querySelectorAll("[data-close]").forEach(function (b) {
+        b.addEventListener("click", function () { $(b.dataset.close).hidden = true; });
+      });
+      document.querySelectorAll(".modal").forEach(function (m) {
+        m.addEventListener("click", function (e) { if (e.target === m) m.hidden = true; });
+      });
 
       checkAuth();
     </script>

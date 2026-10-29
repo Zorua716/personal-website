@@ -131,7 +131,14 @@
   }
 
   // 后端 API 集成
-  var API_BASE = window.PERSONAL_API_BASE || "http://127.0.0.1:8000";
+  var API_BASE =
+    window.PERSONAL_API_BASE ||
+    (window.location.protocol === "file:" ? "http://127.0.0.1:8000" : "");
+
+  var adminLink = document.getElementById("admin-link");
+  if (adminLink) {
+    adminLink.href = (window.PERSONAL_API_BASE || "http://127.0.0.1:8000") + "/admin";
+  }
 
   function escHtml(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
