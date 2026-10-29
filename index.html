@@ -149,7 +149,7 @@
             <h2>成果 <em>SELECTED WORK</em></h2>
           </div>
           <p class="project-note reveal">点击任意条目，在新标签页打开对应项目。</p>
-          <div class="project-list">
+          <div class="project-list" id="project-list">
             <a class="project project-link reveal" href="https://zorua716.github.io/ecom-image-downloader/" target="_blank" rel="noreferrer">
               <div class="project-left"><span class="project-no">01</span><span class="project-year">EXTENSION</span></div>
               <div class="project-main">
@@ -218,6 +218,17 @@
               <button class="copy-email" id="copy-email" type="button" data-email="3540226929@qq.com">复制邮箱</button>
             </div>
           </div>
+          <form class="contact-form reveal" id="contact-form" novalidate>
+            <h3>发条留言 <em>SEND A MESSAGE</em></h3>
+            <div class="form-grid">
+              <input type="text" name="name" placeholder="你的名字" maxlength="80" required />
+              <input type="email" name="email" placeholder="邮箱" maxlength="160" required />
+            </div>
+            <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            <textarea name="message" placeholder="想说的话…" maxlength="2000" required></textarea>
+            <button type="submit" class="copy-email">发送留言</button>
+            <p class="form-msg" id="contact-msg" aria-live="polite"></p>
+          </form>
         </div>
       </section>
     </main>

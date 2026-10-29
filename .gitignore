@@ -3,3 +3,9 @@ _site/
 .vscode/
 .DS_Store
 Thumbs.db
+backend/app.db
+backend/uploads/
+backend/.env
+backend/.venv/
+__pycache__/
+*.pyc

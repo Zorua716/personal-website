@@ -130,6 +130,75 @@
     });
   }
 
+  // 后端 API 集成
+  var API_BASE = window.PERSONAL_API_BASE || "http://127.0.0.1:8000";
+
+  function escHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function renderProjects(projects) {
+    var box = document.getElementById("project-list");
+    if (!box) return;
+    box.innerHTML = projects.map(function (p, i) {
+      var tags = (p.tags || []).map(function (t) { return "<li>" + escHtml(t) + "</li>"; }).join("");
+      return (
+        '<a class="project project-link" href="' + API_BASE + '/go/' + encodeURIComponent(p.slug) + '" target="_blank" rel="noreferrer">' +
+          '<div class="project-left"><span class="project-no">' + String(i + 1).padStart(2, "0") + "</span>" +
+          '<span class="project-year">' + escHtml(p.type_label || "WORK") + "</span></div>" +
+          '<div class="project-main"><p class="project-type">' + escHtml(p.category) + "</p>" +
+          "<h3>" + escHtml(p.title) + "</h3><p>" + escHtml(p.description) + "</p>" +
+          '<ul class="tags">' + tags + "</ul></div>" +
+          '<div class="project-mark" aria-hidden="true">↗</div></a>'
+      );
+    }).join("");
+  }
+
+  fetch(API_BASE + "/api/projects")
+    .then(function (res) { if (!res.ok) throw new Error("offline"); return res.json(); })
+    .then(function (projects) { if (Array.isArray(projects) && projects.length) renderProjects(projects); })
+    .catch(function () { /* 后端不可用时保留静态项目列表 */ });
+
+  var contactForm = document.getElementById("contact-form");
+  var contactMsg = document.getElementById("contact-msg");
+  if (contactForm) {
+    contactForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var fd = new FormData(contactForm);
+      var payload = {
+        name: fd.get("name"),
+        email: fd.get("email"),
+        message: fd.get("message"),
+        website: fd.get("website") || ""
+      };
+      if (!payload.name || !payload.email || !payload.message) {
+        contactMsg.className = "form-msg err";
+        contactMsg.textContent = "请填写姓名、邮箱和留言内容。";
+        return;
+      }
+      var btn = contactForm.querySelector("button[type=submit]");
+      btn.disabled = true;
+      fetch(API_BASE + "/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(function (res) { return res.json().then(function (d) { return { ok: res.ok, d: d }; }); })
+        .then(function (r) {
+          contactMsg.className = r.ok ? "form-msg ok" : "form-msg err";
+          contactMsg.textContent = r.ok ? "留言已发送，谢谢！" : (r.d.detail || "发送失败，请稍后重试。");
+          if (r.ok) contactForm.reset();
+        })
+        .catch(function () {
+          contactMsg.className = "form-msg err";
+          contactMsg.textContent = "后端未运行，请直接发送邮件到 3540226929@qq.com。";
+        })
+        .finally(function () { btn.disabled = false; });
+    });
+  }
+
   // 自定义光标
   var cursor = document.getElementById("cursor");
   var finePointer = window.matchMedia("(pointer: fine)").matches;

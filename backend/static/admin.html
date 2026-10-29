@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>个人网站管理后台</title>
+    <style>
+      :root { --ink: #111; --paper: #f2efe6; --blue: #2c55ff; --lime: #d8ff3e; --line: #d8d2c4; }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--paper); color: var(--ink); }
+      .wrap { max-width: 980px; margin: 0 auto; padding: 24px; }
+      h1 { font-size: 22px; margin: 0 0 16px; }
+      .panel { background: #fff; border: 2px solid var(--ink); padding: 18px; box-shadow: 6px 6px 0 var(--ink); }
+      input, textarea, button, select { font: inherit; }
+      input, textarea { width: 100%; padding: 9px 10px; border: 2px solid var(--ink); background: #fff; margin: 4px 0 10px; }
+      textarea { min-height: 110px; resize: vertical; }
+      button { padding: 9px 14px; border: 2px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; }
+      button.secondary { background: #fff; color: var(--ink); }
+      button:hover { background: var(--blue); }
+      .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+      .tabs button { background: #fff; color: var(--ink); }
+      .tabs button.active { background: var(--lime); }
+      .row { display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--line); }
+      .row strong { display: block; }
+      .row .muted { color: #666; font-size: 13px; }
+      .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .msg { margin: 10px 0; padding: 10px; border: 1px solid var(--line); background: #fff; }
+      .hidden { display: none; }
+      .login { max-width: 360px; margin: 80px auto; }
+      @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div id="login-view" class="panel login">
+        <h1>管理后台登录</h1>
+        <input id="login-user" placeholder="用户名" />
+        <input id="login-pass" type="password" placeholder="密码" />
+        <button id="login-btn">登录</button>
+        <p id="login-msg" style="color:#c0392b"></p>
+      </div>
+
+      <div id="app-view" class="hidden">
+        <div class="row">
+          <h1>个人网站管理后台</h1>
+          <button id="logout-btn" class="secondary">退出登录</button>
+        </div>
+
+        <div class="tabs">
+          <button data-tab="projects" class="active">项目</button>
+          <button data-tab="posts">文章</button>
+          <button data-tab="messages">留言</button>
+          <button data-tab="stats">统计</button>
+          <button data-tab="upload">上传</button>
+        </div>
+
+        <section id="tab-projects" class="tab">
+          <div class="panel">
+            <h2 id="project-form-title">新建项目</h2>
+            <div class="grid2">
+              <div><input id="p-slug" placeholder="slug（英文标识）" /><input id="p-title" placeholder="标题" /><input id="p-url" placeholder="跳转链接" /></div>
+              <div><input id="p-category" placeholder="类型，如 前端 · 浏览器插件" /><input id="p-type" placeholder="编号旁标签，如 EXTENSION" /><input id="p-sort" type="number" placeholder="排序" value="0" /></div>
+            </div>
+            <textarea id="p-desc" placeholder="描述"></textarea>
+            <input id="p-tags" placeholder="技术标签，英文逗号分隔" />
+            <label><input id="p-published" type="checkbox" checked /> 发布</label>
+            <button id="project-save">保存</button>
+            <button id="project-reset" class="secondary">重置</button>
+          </div>
+          <div id="project-list"></div>
+        </section>
+
+        <section id="tab-posts" class="tab hidden">
+          <div class="panel">
+            <h2 id="post-form-title">新建文章</h2>
+            <input id="post-slug" placeholder="slug（英文标识）" />
+            <input id="post-title" placeholder="标题" />
+            <input id="post-summary" placeholder="摘要" />
+            <textarea id="post-content" placeholder="Markdown 内容"></textarea>
+            <label><input id="post-published" type="checkbox" checked /> 发布</label>
+            <button id="post-save">保存</button>
+            <button id="post-reset" class="secondary">重置</button>
+          </div>
+          <div id="post-list"></div>
+        </section>
+
+        <section id="tab-messages" class="tab hidden">
+          <div id="message-list"></div>
+        </section>
+
+        <section id="tab-stats" class="tab hidden">
+          <div class="panel" id="stats-box">加载中…</div>
+        </section>
+
+        <section id="tab-upload" class="tab hidden">
+          <div class="panel">
+            <input type="file" id="upload-file" accept="image/*" />
+            <button id="upload-btn">上传图片</button>
+            <p id="upload-result"></p>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      var $ = function (id) { return document.getElementById(id); };
+
+      async function api(path, options) {
+        options = options || {};
+        options.headers = Object.assign({ "Content-Type": "application/json" }, options.headers || {});
+        var res = await fetch(path, options);
+        var data = null;
+        try { data = await res.json(); } catch (e) { data = null; }
+        if (!res.ok) throw new Error((data && data.detail) || ("请求失败 " + res.status));
+        return data;
+      }
+
+      function jsonBody(method, data) {
+        return { method: method, body: JSON.stringify(data) };
+      }
+
+      // 登录态
+      async function checkAuth() {
+        try {
+          await api("/api/admin/me", { method: "GET" });
+          showApp();
+        } catch (e) {
+          showLogin();
+        }
+      }
+
+      function showLogin() {
+        $("login-view").classList.remove("hidden");
+        $("app-view").classList.add("hidden");
+      }
+
+      function showApp() {
+        $("login-view").classList.add("hidden");
+        $("app-view").classList.remove("hidden");
+        loadProjects();
+        loadPosts();
+        loadMessages();
+        loadStats();
+      }
+
+      $("login-btn").addEventListener("click", async function () {
+        try {
+          await api("/api/admin/login", jsonBody("POST", {
+            username: $("login-user").value,
+            password: $("login-pass").value
+          }));
+          showApp();
+        } catch (e) {
+          $("login-msg").textContent = e.message;
+        }
+      });
+
+      $("logout-btn").addEventListener("click", async function () {
+        await api("/api/admin/logout", { method: "POST" });
+        showLogin();
+      });
+
+      // 标签切换
+      document.querySelectorAll(".tabs button").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          document.querySelectorAll(".tabs button").forEach(function (b) { b.classList.remove("active"); });
+          btn.classList.add("active");
+          document.querySelectorAll(".tab").forEach(function (t) { t.classList.add("hidden"); });
+          $("tab-" + btn.dataset.tab).classList.remove("hidden");
+        });
+      });
+
+      // 项目
+      var editingProject = null;
+
+      async function loadProjects() {
+        var projects = await api("/api/admin/projects");
+        var box = $("project-list");
+        box.innerHTML = "";
+        projects.forEach(function (p) {
+          var div = document.createElement("div");
+          div.className = "row";
+          div.innerHTML =
+            "<div><strong>" + esc(p.title) + "</strong><span class='muted'> /" + esc(p.slug) + " · " + esc(p.url) + "</span></div>" +
+            "<div><button data-edit='" + p.id + "'>编辑</button> <button data-del='" + p.id + "'>删除</button></div>";
+          box.appendChild(div);
+        });
+        box.querySelectorAll("[data-edit]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var p = projects.find(function (x) { return x.id == btn.dataset.edit; });
+            if (!p) return;
+            editingProject = p.id;
+            $("project-form-title").textContent = "编辑项目：" + p.title;
+            $("p-slug").value = p.slug; $("p-title").value = p.title; $("p-url").value = p.url;
+            $("p-category").value = p.category; $("p-type").value = p.type_label; $("p-sort").value = p.sort_order;
+            $("p-desc").value = p.description; $("p-tags").value = (p.tags || []).join(",");
+            $("p-published").checked = p.published;
+          });
+        });
+        box.querySelectorAll("[data-del]").forEach(function (btn) {
+          btn.addEventListener("click", async function () {
+            if (!confirm("确认删除？")) return;
+            await api("/api/admin/projects/" + btn.dataset.del, { method: "DELETE" });
+            loadProjects();
+          });
+        });
+      }
+
+      $("project-save").addEventListener("click", async function () {
+        var data = {
+          slug: $("p-slug").value.trim(), title: $("p-title").value.trim(), url: $("p-url").value.trim(),
+          category: $("p-category").value.trim(), type_label: $("p-type").value.trim(),
+          sort_order: parseInt($("p-sort").value || "0", 10), description: $("p-desc").value,
+          tags: $("p-tags").value.trim(), published: $("p-published").checked
+        };
+        try {
+          if (editingProject == null) await api("/api/admin/projects", jsonBody("POST", data));
+          else await api("/api/admin/projects/" + editingProject, jsonBody("PUT", data));
+          resetProjectForm();
+          loadProjects();
+        } catch (e) { alert(e.message); }
+      });
+
+      $("project-reset").addEventListener("click", resetProjectForm);
+      function resetProjectForm() {
+        editingProject = null;
+        $("project-form-title").textContent = "新建项目";
+        ["p-slug", "p-title", "p-url", "p-category", "p-type", "p-desc", "p-tags"].forEach(function (id) { $(id).value = ""; });
+        $("p-sort").value = "0";
+        $("p-published").checked = true;
+      }
+
+      // 文章
+      var editingPost = null;
+
+      async function loadPosts() {
+        var posts = await api("/api/admin/posts");
+        var box = $("post-list");
+        box.innerHTML = "";
+        posts.forEach(function (p) {
+          var div = document.createElement("div");
+          div.className = "row";
+          div.innerHTML =
+            "<div><strong>" + esc(p.title) + "</strong><span class='muted'> /" + esc(p.slug) + " · " + (p.published ? "已发布" : "草稿") + "</span></div>" +
+            "<div><button data-edit='" + p.id + "'>编辑</button> <button data-del='" + p.id + "'>删除</button></div>";
+          box.appendChild(div);
+        });
+        box.querySelectorAll("[data-edit]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var p = posts.find(function (x) { return x.id == btn.dataset.edit; });
+            editingPost = p.id;
+            $("post-form-title").textContent = "编辑文章：" + p.title;
+            $("post-slug").value = p.slug; $("post-title").value = p.title;
+            $("post-summary").value = p.summary; $("post-content").value = p.content_md;
+            $("post-published").checked = p.published;
+          });
+        });
+        box.querySelectorAll("[data-del]").forEach(function (btn) {
+          btn.addEventListener("click", async function () {
+            if (!confirm("确认删除？")) return;
+            await api("/api/admin/posts/" + btn.dataset.del, { method: "DELETE" });
+            loadPosts();
+          });
+        });
+      }
+
+      $("post-save").addEventListener("click", async function () {
+        var data = {
+          slug: $("post-slug").value.trim(), title: $("post-title").value.trim(),
+          summary: $("post-summary").value.trim(), content_md: $("post-content").value,
+          published: $("post-published").checked
+        };
+        try {
+          if (editingPost == null) await api("/api/admin/posts", jsonBody("POST", data));
+          else await api("/api/admin/posts/" + editingPost, jsonBody("PUT", data));
+          resetPostForm();
+          loadPosts();
+        } catch (e) { alert(e.message); }
+      });
+
+      $("post-reset").addEventListener("click", resetPostForm);
+      function resetPostForm() {
+        editingPost = null;
+        $("post-form-title").textContent = "新建文章";
+        ["post-slug", "post-title", "post-summary", "post-content"].forEach(function (id) { $(id).value = ""; });
+        $("post-published").checked = true;
+      }
+
+      // 留言
+      async function loadMessages() {
+        var messages = await api("/api/admin/messages");
+        var box = $("message-list");
+        box.innerHTML = "";
+        if (!messages.length) box.innerHTML = '<div class="panel">暂无留言</div>';
+        messages.forEach(function (m) {
+          var div = document.createElement("div");
+          div.className = "msg";
+          div.innerHTML = "<strong>" + esc(m.name) + " · " + esc(m.email) + "</strong><p>" + esc(m.message) + "</p><button data-del='" + m.id + "'>删除</button>";
+          box.appendChild(div);
+        });
+        box.querySelectorAll("[data-del]").forEach(function (btn) {
+          btn.addEventListener("click", async function () {
+            await api("/api/admin/messages/" + btn.dataset.del, { method: "DELETE" });
+            loadMessages();
+          });
+        });
+      }
+
+      // 统计
+      async function loadStats() {
+        var s = await api("/api/admin/stats");
+        var clicks = Object.keys(s.clicks).map(function (k) { return "<div>" + esc(k) + "：" + s.clicks[k] + " 次</div>"; }).join("") || "<div>暂无点击</div>";
+        $("stats-box").innerHTML =
+          "<p>项目数：" + s.project_count + "，文章数：" + s.post_count + "，留言数：" + s.message_count + "</p>" + clicks;
+      }
+
+      // 上传
+      $("upload-btn").addEventListener("click", async function () {
+        var file = $("upload-file").files[0];
+        if (!file) { alert("请先选择图片"); return; }
+        var form = new FormData();
+        form.append("file", file);
+        var res = await fetch("/api/admin/upload", { method: "POST", body: form });
+        var data = await res.json();
+        if (!res.ok) { $("upload-result").textContent = data.detail || "上传失败"; return; }
+        $("upload-result").innerHTML = "上传成功：<code>" + data.url + "</code>";
+      });
+
+      function esc(s) {
+        return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+      }
+
+      checkAuth();
+    </script>
+  </body>
+</html>
