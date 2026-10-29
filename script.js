@@ -1,38 +1,41 @@
 (function () {
   "use strict";
 
-  // 移动端菜单
   var nav = document.getElementById("nav");
-  var toggle = document.getElementById("nav-toggle");
-  var links = nav ? Array.prototype.slice.call(nav.querySelectorAll('a[href^="#"]')) : [];
+  var menuToggle = document.getElementById("menu-toggle");
+  var navLinks = nav ? Array.prototype.slice.call(nav.querySelectorAll('a[href^="#"]')) : [];
+  var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function setMenu(open) {
-    if (!nav || !toggle) return;
+    if (!nav || !menuToggle) return;
     nav.classList.toggle("open", open);
-    toggle.setAttribute("aria-expanded", String(open));
-    toggle.setAttribute("aria-label", open ? "关闭菜单" : "打开菜单");
+    menuToggle.setAttribute("aria-expanded", String(open));
+    menuToggle.setAttribute("aria-label", open ? "关闭菜单" : "打开菜单");
   }
 
-  if (toggle && nav) {
-    toggle.addEventListener("click", function () {
+  if (menuToggle && nav) {
+    menuToggle.addEventListener("click", function () {
       setMenu(!nav.classList.contains("open"));
     });
   }
 
-  links.forEach(function (link) {
+  navLinks.forEach(function (link) {
     link.addEventListener("click", function () {
       setMenu(false);
     });
   });
 
-  // 当前导航高亮
-  var sectionIds = ["about", "skills", "projects", "contact"];
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") setMenu(false);
+  });
+
+  // 当前区块导航高亮
   var linkByHash = {};
-  links.forEach(function (link) {
+  navLinks.forEach(function (link) {
     linkByHash[link.getAttribute("href")] = link;
   });
 
-  var sections = sectionIds
+  var sections = ["about", "skills", "projects", "contact"]
     .map(function (id) {
       return document.getElementById(id);
     })
@@ -43,14 +46,14 @@
       function (entries) {
         entries.forEach(function (entry) {
           if (!entry.isIntersecting) return;
-          links.forEach(function (link) {
+          navLinks.forEach(function (link) {
             link.classList.remove("active");
           });
           var active = linkByHash["#" + entry.target.id];
           if (active) active.classList.add("active");
         });
       },
-      { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
+      { rootMargin: "-42% 0px -52% 0px", threshold: 0 }
     );
     sections.forEach(function (section) {
       navObserver.observe(section);
@@ -59,16 +62,16 @@
 
   // 复制邮箱
   var copyBtn = document.getElementById("copy-email");
-  var email = document.getElementById("email");
-  if (copyBtn && email) {
+  if (copyBtn) {
     copyBtn.addEventListener("click", function () {
-      copyText(email.textContent).then(function (ok) {
+      var email = copyBtn.getAttribute("data-email") || "";
+      copyText(email).then(function (ok) {
         if (!ok) return;
         var original = copyBtn.textContent;
-        copyBtn.textContent = "已复制";
+        copyBtn.textContent = "已复制 ✓";
         window.setTimeout(function () {
           copyBtn.textContent = original;
-        }, 1500);
+        }, 1600);
       });
     });
   }
@@ -105,11 +108,9 @@
     return ok;
   }
 
-  // 进场动画
+  // 滚动进场
   var revealEls = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  if (reduced || !("IntersectionObserver" in window)) {
+  if (reducedMotion || !("IntersectionObserver" in window)) {
     revealEls.forEach(function (el) {
       el.classList.add("visible");
     });
@@ -122,68 +123,44 @@
           observer.unobserve(entry.target);
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0.1, rootMargin: "0px 0px -30px 0px" }
     );
     revealEls.forEach(function (el) {
       revealObserver.observe(el);
     });
   }
 
-  // 星空背景
-  var canvas = document.getElementById("stars");
-  if (canvas && canvas.getContext) {
-    var ctx = canvas.getContext("2d");
-    var stars = [];
-    var width = 0;
-    var height = 0;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var motion = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // 自定义光标
+  var cursor = document.getElementById("cursor");
+  var finePointer = window.matchMedia("(pointer: fine)").matches;
+  if (cursor && finePointer && !reducedMotion) {
+    var targetX = window.innerWidth / 2;
+    var targetY = window.innerHeight / 2;
+    var currentX = targetX;
+    var currentY = targetY;
 
-    function makeStars() {
-      var count = window.innerWidth < 760 ? 70 : 140;
-      stars = [];
-      for (var i = 0; i < count; i++) {
-        stars.push({
-          x: Math.random(),
-          y: Math.random(),
-          r: Math.random() * 1.3 + 0.3,
-          a: Math.random() * 0.7 + 0.2,
-          tw: Math.random() * 0.8 + 0.2
-        });
-      }
-    }
-
-    function resize() {
-      width = canvas.clientWidth;
-      height = canvas.clientHeight;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-
-    var t = 0;
-    function draw() {
-      ctx.clearRect(0, 0, width, height);
-      for (var i = 0; i < stars.length; i++) {
-        var s = stars[i];
-        var alpha = motion ? s.a * (0.6 + 0.4 * Math.sin(t * s.tw + i)) : s.a;
-        ctx.beginPath();
-        ctx.arc(s.x * width, s.y * height, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(230, 234, 242, " + alpha.toFixed(3) + ")";
-        ctx.fill();
-      }
-      if (motion) {
-        t += 0.02;
-        window.requestAnimationFrame(draw);
-      }
-    }
-
-    makeStars();
-    resize();
-    draw();
-    window.addEventListener("resize", function () {
-      resize();
-      if (!motion) draw();
+    document.addEventListener("mousemove", function (event) {
+      targetX = event.clientX;
+      targetY = event.clientY;
     });
+
+    document.querySelectorAll("a, button").forEach(function (el) {
+      el.addEventListener("mouseenter", function () {
+        cursor.classList.add("hover");
+      });
+      el.addEventListener("mouseleave", function () {
+        cursor.classList.remove("hover");
+      });
+    });
+
+    function animateCursor() {
+      currentX += (targetX - currentX) * 0.18;
+      currentY += (targetY - currentY) * 0.18;
+      cursor.style.left = currentX + "px";
+      cursor.style.top = currentY + "px";
+      window.requestAnimationFrame(animateCursor);
+    }
+
+    animateCursor();
   }
 })();

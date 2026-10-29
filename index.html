@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>陈世堂 · 个人网站</title>
-    <meta name="description" content="陈世堂，物联网工程专业学生。关注大模型与工程实践，喜欢把想法做成能真正跑起来的小工具。" />
-    <meta name="theme-color" content="#0B0F1A" />
+    <title>陈世堂 — AI / Web / Tools</title>
+    <meta name="description" content="陈世堂，物联网工程专业学生。关注大模型与工程实践，做能真正跑起来的小工具。" />
+    <meta name="theme-color" content="#F2EFE6" />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
     <script>
@@ -13,144 +13,197 @@
     </script>
   </head>
   <body>
-    <canvas id="stars" aria-hidden="true"></canvas>
-
     <a class="skip-link" href="#main">跳到主要内容</a>
+    <div class="cursor" id="cursor" aria-hidden="true"></div>
 
-    <header class="site-header" id="site-header">
-      <div class="container nav-inner">
-        <a class="brand" href="#top">陈世堂</a>
-        <nav class="nav" id="nav" aria-label="主导航">
-          <a href="#about">关于</a>
-          <a href="#skills">技能</a>
-          <a href="#projects">项目</a>
-          <a href="#contact">联系</a>
-        </nav>
-        <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="打开菜单">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>AI × WEB × CHROME EXTENSIONS</span><span>物联网工程 / IOT STUDENT</span><span>BASED IN DALIAN</span><span>OPEN TO COLLABORATION</span>
+        <span>AI × WEB × CHROME EXTENSIONS</span><span>物联网工程 / IOT STUDENT</span><span>BASED IN DALIAN</span><span>OPEN TO COLLABORATION</span>
       </div>
+    </div>
+
+    <header class="topbar">
+      <a class="logo" href="#top" aria-label="回到顶部">CS<span>®</span></a>
+      <nav class="nav" id="nav" aria-label="主导航">
+        <a href="#about"><span>01</span>关于</a>
+        <a href="#skills"><span>02</span>技能</a>
+        <a href="#projects"><span>03</span>项目</a>
+        <a href="#contact"><span>04</span>联系</a>
+      </nav>
+      <a class="top-cta" href="mailto:3540226929@qq.com">SAY HELLO <span>↗</span></a>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="打开菜单">
+        <span></span><span></span>
+      </button>
     </header>
+
+    <aside class="rail" aria-hidden="true">
+      <span class="rail-year">2026 / PORTFOLIO</span>
+      <div class="rail-links">
+        <a href="https://github.com/Zorua716" target="_blank" rel="noreferrer">GH</a>
+        <a href="mailto:3540226929@qq.com">EM</a>
+      </div>
+      <span class="rail-status"><i></i> OPEN TO WORK</span>
+    </aside>
 
     <main id="main">
       <section class="hero" id="top">
-        <div class="container hero-inner">
-          <img class="avatar reveal" src="assets/avatar.png" alt="陈世堂的 GitHub 头像" />
-          <p class="role reveal">物联网工程专业学生</p>
-          <h1 class="reveal">陈世堂</h1>
-          <p class="lead reveal">关注大模型与工程实践，喜欢把想法做成能真正跑起来的小工具。</p>
-          <div class="hero-actions reveal">
-            <a class="btn btn-primary" href="#projects">查看项目</a>
-            <a class="btn btn-ghost" href="#contact">联系我</a>
-          </div>
-          <div class="scroll-hint reveal" aria-hidden="true">
-            <span></span>
-          </div>
-        </div>
-      </section>
-
-      <section class="section" id="about">
-        <div class="container">
-          <h2 class="section-title reveal">关于我</h2>
-          <p class="about-text reveal">
-            我是陈世堂，大连民族大学物联网工程专业学生。我对深度学习与工程实践有浓厚兴趣，课余从零复现并训练 MiniMind 小语言模型，也开发浏览器扩展与全栈应用，享受把一个想法逐步落地成可用工具的过程。
-          </p>
-          <div class="edu reveal">
-            <span class="edu-label">教育经历</span>
-            <span>大连民族大学 · 物联网工程专业</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="section" id="skills">
-        <div class="container">
-          <h2 class="section-title reveal">技能</h2>
-          <div class="skills-grid">
-            <div class="skill-group reveal">
-              <h3>大模型与深度学习</h3>
-              <ul class="chips">
-                <li>Python</li>
-                <li>PyTorch</li>
-                <li>Transformer</li>
-                <li>LoRA / SFT</li>
-                <li>Tokenizer</li>
-              </ul>
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="kicker reveal">CHEN SHITANG — IOT STUDENT / BUILDER</p>
+            <h1 class="reveal">
+              <span class="cn">陈世堂</span>
+              <span class="en">CHEN<br />SHITANG</span>
+            </h1>
+            <p class="hero-lead reveal">关注大模型与工程实践，喜欢把想法做成能真正跑起来的小工具。</p>
+            <div class="hero-actions reveal">
+              <a class="btn btn-ink" href="#projects">查看项目 <span>↘</span></a>
+              <a class="btn btn-line" href="#contact">联系我</a>
             </div>
-            <div class="skill-group reveal">
-              <h3>前端与工程</h3>
-              <ul class="chips">
-                <li>TypeScript</li>
-                <li>Vue 3</li>
-                <li>Chrome 扩展</li>
-                <li>FastAPI</li>
-                <li>SQLite</li>
-                <li>Git</li>
-              </ul>
+          </div>
+
+          <div class="hero-side reveal">
+            <div class="id-card">
+              <div class="id-head"><span>PROFILE / 001</span><span>2026</span></div>
+              <img class="portrait" src="assets/avatar.png" alt="陈世堂的 GitHub 头像" />
+              <div class="id-body">
+                <strong>陈世堂</strong>
+                <span>物联网工程专业学生</span>
+                <div class="id-row"><span>LOCATION</span><span>DALIAN, CN</span></div>
+                <div class="id-row"><span>FOCUS</span><span>AI / WEB / TOOLS</span></div>
+                <div class="id-row"><span>STATUS</span><span class="live"><i></i> OPEN</span></div>
+              </div>
+              <div class="barcode" aria-hidden="true"></div>
+            </div>
+            <div class="seal" aria-hidden="true">
+              <svg viewBox="0 0 120 120">
+                <defs>
+                  <path id="sealPath" d="M60,60 m-42,0 a42,42 0 1,1 84,0 a42,42 0 1,1 -84,0" />
+                </defs>
+                <text>
+                  <textPath href="#sealPath">OPEN FOR COLLABORATION • BUILD SMALL • SHIP FAST • </textPath>
+                </text>
+              </svg>
+              <span>✦</span>
             </div>
           </div>
         </div>
+
+        <div class="container hero-footer">
+          <span>SCROLL TO EXPLORE</span>
+          <span>AI · WEB · CHROME EXTENSIONS</span>
+        </div>
       </section>
 
-      <section class="section" id="projects">
+      <section class="section about" id="about">
         <div class="container">
-          <h2 class="section-title reveal">项目</h2>
-          <div class="project-grid">
-            <article class="project-card reveal">
-              <div class="project-top">
-                <span class="project-emoji" aria-hidden="true">🧠</span>
+          <div class="section-head reveal">
+            <span class="section-no">01</span>
+            <h2>关于 <em>ABOUT</em></h2>
+          </div>
+          <div class="about-grid">
+            <p class="about-statement reveal">我用代码把想法<br /><span>变成可以运行的东西。</span></p>
+            <div class="about-body reveal">
+              <p>我是陈世堂，大连民族大学物联网工程专业学生。对深度学习与工程实践有浓厚兴趣，课余从零复现并训练 MiniMind 小语言模型，也开发浏览器扩展与全栈应用。</p>
+              <p>我喜欢把复杂问题拆成能验证的小步骤，先跑通，再打磨。相比只停留在概念，更在意最终能不能真正用起来。</p>
+              <dl class="facts">
+                <div><dt>教育</dt><dd>大连民族大学 · 物联网工程</dd></div>
+                <div><dt>方向</dt><dd>大模型 / 前端 / 浏览器工具</dd></div>
+                <div><dt>状态</dt><dd>开放交流与合作</dd></div>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section skills" id="skills">
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-no">02</span>
+            <h2>技能 <em>STACK</em></h2>
+          </div>
+          <div class="stack">
+            <div class="stack-row reveal">
+              <span class="stack-label">AI / ML</span>
+              <div class="stack-items"><span>Python</span><span>PyTorch</span><span>Transformer</span><span>LoRA / SFT</span><span>Tokenizer</span></div>
+              <span class="stack-note">TRAIN & FINE-TUNE</span>
+            </div>
+            <div class="stack-row reveal">
+              <span class="stack-label">WEB / TOOLS</span>
+              <div class="stack-items"><span>TypeScript</span><span>Vue 3</span><span>Chrome MV3</span><span>Vite</span><span>esbuild</span></div>
+              <span class="stack-note">BUILD & SHIP</span>
+            </div>
+            <div class="stack-row reveal">
+              <span class="stack-label">BACKEND</span>
+              <div class="stack-items"><span>FastAPI</span><span>SQLite</span><span>Git</span><span>REST API</span></div>
+              <span class="stack-note">SERVE & STORE</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section projects" id="projects">
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-no">03</span>
+            <h2>项目 <em>SELECTED WORK</em></h2>
+          </div>
+          <div class="project-list">
+            <article class="project reveal">
+              <div class="project-left"><span class="project-no">01</span><span class="project-year">2026</span></div>
+              <div class="project-main">
+                <p class="project-type">AI / MODEL TRAINING</p>
                 <h3>MiniMind 小语言模型训练</h3>
+                <p>基于 PyTorch 复现 LLaMA 风格最小 Transformer，完成 GQA、RMSNorm、RoPE、SwiGLU 与 KV Cache 增量解码，并实践分词器训练、预训练、SFT 与 LoRA 微调；配套支持本地模型切换的聊天系统。</p>
+                <ul class="tags"><li>Python</li><li>PyTorch</li><li>Transformer</li><li>FastAPI</li><li>Vue 3</li></ul>
               </div>
-              <p class="project-desc">
-                基于 PyTorch 复现 LLaMA 风格最小 Transformer，实现 GQA、RMSNorm、RoPE、SwiGLU 与 KV Cache 增量解码，并完成分词器训练、预训练、SFT 与 LoRA 微调；配套一个支持本地模型切换的聊天系统。
-              </p>
-              <ul class="chips">
-                <li>Python</li>
-                <li>PyTorch</li>
-                <li>Transformer</li>
-                <li>FastAPI</li>
-                <li>Vue 3</li>
-              </ul>
+              <div class="project-mark" aria-hidden="true">↗</div>
             </article>
 
-            <article class="project-card reveal">
-              <div class="project-top">
-                <span class="project-emoji" aria-hidden="true">⬇️</span>
+            <article class="project reveal">
+              <div class="project-left"><span class="project-no">02</span><span class="project-year">2026</span></div>
+              <div class="project-main">
+                <p class="project-type">CHROME EXTENSION / WEB</p>
                 <h3>电商图片提取下载助手</h3>
+                <p>一款 Chrome 浏览器扩展，在淘宝、京东、拼多多商家版商品详情页一键提取商品图片，集中预览、按需勾选并统一转换为 PNG 下载，全程本地处理。</p>
+                <ul class="tags"><li>TypeScript</li><li>Vue 3</li><li>Chrome MV3</li><li>Vite</li><li>esbuild</li></ul>
               </div>
-              <p class="project-desc">
-                一款 Chrome 浏览器扩展，在淘宝、京东、拼多多商家版商品详情页一键提取商品图片，集中预览、按需勾选并统一转换为 PNG 下载，全程本地处理。
-              </p>
-              <ul class="chips">
-                <li>TypeScript</li>
-                <li>Vue 3</li>
-                <li>Chrome MV3</li>
-                <li>Vite</li>
-                <li>esbuild</li>
-              </ul>
+              <div class="project-mark" aria-hidden="true">↗</div>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="section" id="contact">
-        <div class="container contact-inner">
-          <h2 class="section-title reveal">联系我</h2>
-          <p class="contact-sub reveal">有想法或合作意向，欢迎发邮件聊聊。</p>
-          <div class="email-row reveal">
-            <code id="email">3540226929@qq.com</code>
-            <button class="btn btn-primary" id="copy-email" type="button">复制邮箱</button>
-            <a class="btn btn-ghost" href="mailto:3540226929@qq.com">发送邮件</a>
-            <a class="btn btn-ghost" href="https://github.com/Zorua716" target="_blank" rel="noreferrer">GitHub 主页</a>
+      <section class="section contact" id="contact">
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-no">04</span>
+            <h2>联系 <em>CONTACT</em></h2>
+          </div>
+          <div class="contact-grid">
+            <div class="contact-copy reveal">
+              <p class="contact-big">有想法？<br />聊聊。</p>
+              <p>如果你在做 AI、浏览器工具或有趣的产品，欢迎发邮件给我。</p>
+            </div>
+            <div class="contact-links reveal">
+              <a class="contact-link" href="mailto:3540226929@qq.com">
+                <span>EMAIL</span><strong>3540226929@qq.com</strong><span>↗</span>
+              </a>
+              <a class="contact-link" href="https://github.com/Zorua716" target="_blank" rel="noreferrer">
+                <span>GITHUB</span><strong>@Zorua716</strong><span>↗</span>
+              </a>
+              <button class="copy-email" id="copy-email" type="button" data-email="3540226929@qq.com">复制邮箱</button>
+            </div>
           </div>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <div class="container footer-inner">
-        <p>© 2026 陈世堂 · <a href="https://github.com/Zorua716" target="_blank" rel="noreferrer">GitHub</a></p>
+      <div class="container footer-grid">
+        <span>© 2026 陈世堂</span>
+        <span>DESIGNED &amp; BUILT BY CHEN SHITANG</span>
+        <a href="#top">BACK TO TOP ↑</a>
       </div>
     </footer>
 
