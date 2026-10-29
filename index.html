@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>陈世堂 · 个人网站</title>
+    <meta name="description" content="陈世堂，物联网工程专业学生。关注大模型与工程实践，喜欢把想法做成能真正跑起来的小工具。" />
+    <meta name="theme-color" content="#0B0F1A" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+  </head>
+  <body>
+    <canvas id="stars" aria-hidden="true"></canvas>
+
+    <a class="skip-link" href="#main">跳到主要内容</a>
+
+    <header class="site-header" id="site-header">
+      <div class="container nav-inner">
+        <a class="brand" href="#top">陈世堂</a>
+        <nav class="nav" id="nav" aria-label="主导航">
+          <a href="#about">关于</a>
+          <a href="#skills">技能</a>
+          <a href="#projects">项目</a>
+          <a href="#contact">联系</a>
+        </nav>
+        <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="打开菜单">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="container hero-inner">
+          <img class="avatar reveal" src="assets/avatar.png" alt="陈世堂的 GitHub 头像" />
+          <p class="role reveal">物联网工程专业学生</p>
+          <h1 class="reveal">陈世堂</h1>
+          <p class="lead reveal">关注大模型与工程实践，喜欢把想法做成能真正跑起来的小工具。</p>
+          <div class="hero-actions reveal">
+            <a class="btn btn-primary" href="#projects">查看项目</a>
+            <a class="btn btn-ghost" href="#contact">联系我</a>
+          </div>
+          <div class="scroll-hint reveal" aria-hidden="true">
+            <span></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="about">
+        <div class="container">
+          <h2 class="section-title reveal">关于我</h2>
+          <p class="about-text reveal">
+            我是陈世堂，大连民族大学物联网工程专业学生。我对深度学习与工程实践有浓厚兴趣，课余从零复现并训练 MiniMind 小语言模型，也开发浏览器扩展与全栈应用，享受把一个想法逐步落地成可用工具的过程。
+          </p>
+          <div class="edu reveal">
+            <span class="edu-label">教育经历</span>
+            <span>大连民族大学 · 物联网工程专业</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="skills">
+        <div class="container">
+          <h2 class="section-title reveal">技能</h2>
+          <div class="skills-grid">
+            <div class="skill-group reveal">
+              <h3>大模型与深度学习</h3>
+              <ul class="chips">
+                <li>Python</li>
+                <li>PyTorch</li>
+                <li>Transformer</li>
+                <li>LoRA / SFT</li>
+                <li>Tokenizer</li>
+              </ul>
+            </div>
+            <div class="skill-group reveal">
+              <h3>前端与工程</h3>
+              <ul class="chips">
+                <li>TypeScript</li>
+                <li>Vue 3</li>
+                <li>Chrome 扩展</li>
+                <li>FastAPI</li>
+                <li>SQLite</li>
+                <li>Git</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="projects">
+        <div class="container">
+          <h2 class="section-title reveal">项目</h2>
+          <div class="project-grid">
+            <article class="project-card reveal">
+              <div class="project-top">
+                <span class="project-emoji" aria-hidden="true">🧠</span>
+                <h3>MiniMind 小语言模型训练</h3>
+              </div>
+              <p class="project-desc">
+                基于 PyTorch 复现 LLaMA 风格最小 Transformer，实现 GQA、RMSNorm、RoPE、SwiGLU 与 KV Cache 增量解码，并完成分词器训练、预训练、SFT 与 LoRA 微调；配套一个支持本地模型切换的聊天系统。
+              </p>
+              <ul class="chips">
+                <li>Python</li>
+                <li>PyTorch</li>
+                <li>Transformer</li>
+                <li>FastAPI</li>
+                <li>Vue 3</li>
+              </ul>
+            </article>
+
+            <article class="project-card reveal">
+              <div class="project-top">
+                <span class="project-emoji" aria-hidden="true">⬇️</span>
+                <h3>电商图片提取下载助手</h3>
+              </div>
+              <p class="project-desc">
+                一款 Chrome 浏览器扩展，在淘宝、京东、拼多多商家版商品详情页一键提取商品图片，集中预览、按需勾选并统一转换为 PNG 下载，全程本地处理。
+              </p>
+              <ul class="chips">
+                <li>TypeScript</li>
+                <li>Vue 3</li>
+                <li>Chrome MV3</li>
+                <li>Vite</li>
+                <li>esbuild</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="contact">
+        <div class="container contact-inner">
+          <h2 class="section-title reveal">联系我</h2>
+          <p class="contact-sub reveal">有想法或合作意向，欢迎发邮件聊聊。</p>
+          <div class="email-row reveal">
+            <code id="email">3540226929@qq.com</code>
+            <button class="btn btn-primary" id="copy-email" type="button">复制邮箱</button>
+            <a class="btn btn-ghost" href="mailto:3540226929@qq.com">发送邮件</a>
+            <a class="btn btn-ghost" href="https://github.com/Zorua716" target="_blank" rel="noreferrer">GitHub 主页</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>© 2026 陈世堂 · <a href="https://github.com/Zorua716" target="_blank" rel="noreferrer">GitHub</a></p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
