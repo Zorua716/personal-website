@@ -9,6 +9,7 @@ from pathlib import Path
 
 import bcrypt
 import jwt
+from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
@@ -19,6 +20,7 @@ from sqlalchemy import String, Text, Integer, DateTime, Boolean, create_engine, 
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 SITE_DIR = BASE_DIR.parent
 ASSETS_DIR = SITE_DIR / "assets"
 UPLOAD_DIR = BASE_DIR / "uploads"
