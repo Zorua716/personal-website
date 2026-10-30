@@ -29,7 +29,8 @@
         <a href="#about"><span>01</span>关于</a>
         <a href="#skills"><span>02</span>技能</a>
         <a href="#projects"><span>03</span>成果</a>
-        <a href="#contact"><span>04</span>联系</a>
+        <a href="#posts"><span>04</span>文章</a>
+        <a href="#contact"><span>05</span>联系</a>
       </nav>
       <a class="top-cta" href="mailto:3540226929@qq.com">SAY HELLO <span>↗</span></a>
       <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="打开菜单">
@@ -197,10 +198,22 @@
         </div>
       </section>
 
-      <section class="section contact" id="contact">
+      <section class="section posts" id="posts">
         <div class="container">
           <div class="section-head reveal">
             <span class="section-no">04</span>
+            <h2>文章 <em>WRITING</em></h2>
+          </div>
+          <div class="post-list" id="post-list">
+            <p class="post-empty">正在加载文章…</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section contact" id="contact">
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-no">05</span>
             <h2>联系 <em>CONTACT</em></h2>
           </div>
           <div class="contact-grid">
@@ -232,6 +245,15 @@
         </div>
       </section>
     </main>
+
+    <div class="post-modal" id="post-modal" hidden>
+      <article class="post-modal-card">
+        <button class="post-modal-close" id="post-modal-close" type="button" aria-label="关闭">×</button>
+        <p class="post-modal-date" id="post-modal-date"></p>
+        <h2 id="post-modal-title"></h2>
+        <div class="post-modal-content" id="post-modal-content"></div>
+      </article>
+    </div>
 
     <footer class="site-footer">
       <div class="container footer-grid">

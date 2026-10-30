@@ -35,7 +35,7 @@
     linkByHash[link.getAttribute("href")] = link;
   });
 
-  var sections = ["about", "skills", "projects", "contact"]
+  var sections = ["about", "skills", "projects", "posts", "contact"]
     .map(function (id) {
       return document.getElementById(id);
     })
@@ -133,7 +133,9 @@
   // 后端 API 集成
   var API_BASE =
     window.PERSONAL_API_BASE ||
-    (window.location.protocol === "file:" ? "http://127.0.0.1:8000" : "");
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+      ? ""
+      : "http://127.0.0.1:8000");
 
   var adminLink = document.getElementById("admin-link");
   if (adminLink) {
@@ -167,6 +169,68 @@
     .then(function (res) { if (!res.ok) throw new Error("offline"); return res.json(); })
     .then(function (projects) { if (Array.isArray(projects) && projects.length) renderProjects(projects); })
     .catch(function () { /* 后端不可用时保留静态项目列表 */ });
+
+  function openPost(post) {
+    var modal = document.getElementById("post-modal");
+    if (!modal) return;
+    var date = post.created_at ? new Date(post.created_at).toLocaleDateString("zh-CN") : "";
+    document.getElementById("post-modal-date").textContent = date;
+    document.getElementById("post-modal-title").textContent = post.title || "";
+    document.getElementById("post-modal-content").innerHTML = post.content_html || "";
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+
+  function closePost() {
+    var modal = document.getElementById("post-modal");
+    if (!modal) return;
+    modal.hidden = true;
+    document.body.style.overflow = "";
+  }
+
+  var postModal = document.getElementById("post-modal");
+  var postClose = document.getElementById("post-modal-close");
+  if (postModal && postClose) {
+    postClose.addEventListener("click", closePost);
+    postModal.addEventListener("click", function (event) {
+      if (event.target === postModal) closePost();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") closePost();
+    });
+  }
+
+  function renderPosts(posts) {
+    var box = document.getElementById("post-list");
+    if (!box) return;
+    if (!posts.length) {
+      box.innerHTML = '<p class="post-empty">还没有发布文章。</p>';
+      return;
+    }
+    box.innerHTML = posts.map(function (p, i) {
+      var date = p.created_at ? new Date(p.created_at).toLocaleDateString("zh-CN") : "";
+      return (
+        '<button class="post-item" type="button" data-post="' + i + '">' +
+          '<span class="post-date">' + escHtml(date) + "</span>" +
+          "<span><span class=\"post-title\">" + escHtml(p.title) + "</span>" +
+          '<span class="post-summary">' + escHtml(p.summary || "") + "</span></span>" +
+          '<span class="post-arrow" aria-hidden="true">↗</span></button>'
+      );
+    }).join("");
+    box.querySelectorAll("[data-post]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        openPost(posts[parseInt(btn.dataset.post, 10)]);
+      });
+    });
+  }
+
+  fetch(API_BASE + "/api/posts")
+    .then(function (res) { if (!res.ok) throw new Error("offline"); return res.json(); })
+    .then(function (posts) { renderPosts(Array.isArray(posts) ? posts : []); })
+    .catch(function () {
+      var box = document.getElementById("post-list");
+      if (box) box.innerHTML = '<p class="post-empty">文章暂时无法加载，请确认后端正在运行。</p>';
+    });
 
   var contactForm = document.getElementById("contact-form");
   var contactMsg = document.getElementById("contact-msg");
